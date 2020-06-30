@@ -332,7 +332,95 @@
     5.延时消息
     6.批量发送消息
     7.事务消息
-######4..5消息的消费模式
+######4.5消息的消费模式
     1.负载均衡模式(默认)
     2.广播模式
+                    
+####5.消息存储(消息的持久化)
+![Image text](image/image-20200623112818282.png)
+######5.1存储介质
+    - 关系型数据库DB:ActiveMQ默认采用KahaDB做消息存储
+    
+    - 文件系统:RocketMQ/Kafka/RabbbitMQ均采用的是消息刷盘至所部署虚拟机/物理机的
+    文件系统来做持久化(刷盘一般可分为异步刷盘和同步刷盘两种模式).
+    消息刷盘为消息存储提供了一种高效率,高可靠性和高性能的数据持久化方式.
+    除非部署MQ机器本身或本地磁盘挂了,否则一般是不会出现无法持久化的故障问题
+![Image text](image/image-20200623113342053.png)
+
+######5.2消息传输
+![Image text](image/image-20200623113136272.png)
+
+######5.3消息的存储结构
+![Image text](image/image-20200623115257021.png)
+
+######5.4刷盘机制
+    1. 同步刷盘:mq将消息写入到磁盘中之后才会向producer返回成功状态
+    2. 异步刷盘:在返回成功状态时,消息只是被mq写入到内存中,写操作的返回快,
+    吞吐量大.当内存中消息积累到一定程度时,统一触发写磁盘操作.
+    
+######5.5配置方式
+    #刷盘方式
+    #ASYNC_FLUSH    异步刷盘
+    #SYNC_FLUSH     同步刷盘
+    flushDiskType=SYNC_FLUSH
+
+####6.高可用性机制
+
+######6.1消息消费高可用
+![Image text](image/image-20200623132227929.png)   
+ 
+######6.2消息发送高可用
+![Image text](image/image-20200623132704206.png)  
+
+######6.3消息主从配置
+    - 同步复制:消息在向master和slave均写成功后才会向producer返回成功状态
+    - 异步复制:消息只要向master写成功之后即向producer返回成功状态,如果此时master故障,则存在消息丢失的问题
+
+######6.4配置
+    #ASYNC_MASTER  异步复制Master    消息到达master,会立即给producer响应,然后复制消息到slave
+    #SYNC_MASTER   同步双写Master    消息到达master后,会先复制到slave,然后再给producer响应
+    #SLAVE
+    brokerRole=SYNC_MASTER
+![Image text](image/image-20200623133254978.png)  
+
+####7.负载均衡
+
+######7.1producer负载均衡
+![Image text](image/image-20200623133746863.png)  
+
+######7.2consumer负载均衡
+- 集群模式
+- 广播模式
+
+####8.消息重试
+    顺序消息的重试    
+![Image text](image/image-20200623134721852.png)  
+
+    无序消息的重试
+![Image text](image/image-20200623134736271.png)  
+![Image text](image/image-20200623134943096.png)  
+![Image text](image/image-20200623135137856.png)  
+![Image text](image/image-20200623135157425.png)
+
+####9.死信队列
+![Image text](image/image-20200623135543524.png)
+![Image text](image/image-20200623135602783.png)
+
+####10.消息幂等性
+![Image text](image/image-20200623135903280.png)
+![Image text](image/image-20200623140215454.png)
+
+  
+    
+           	 
+
+
+
+
+
+    
+  
+  
+
+    
                     
