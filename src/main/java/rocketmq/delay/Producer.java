@@ -40,7 +40,7 @@ public class Producer {
             message.setDelayTimeLevel(2);
             //5. 发送消息
             SendResult result = producer.send(message);
-            log.info("发送结果[{}]", result);
+            System.out.println("发送结果[{}]"+ result);
             //模拟现实 ,线程休眠一秒
             TimeUnit.SECONDS.sleep(1);
         }

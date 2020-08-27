@@ -10,6 +10,8 @@ import org.apache.rocketmq.common.message.MessageQueue;
 import java.util.List;
 
 /**
+ * 发送顺序消息
+ * 通过指定MessageQueueSelector中的queue通道,来保证同一个订单只会通过同一个queue发送到消费者端
  * @author lishanglei
  * @version v1.0.0
  * @date 2020/6/17
@@ -32,7 +34,7 @@ public class Producer {
         List<OrderStep> orderStepList = OrderStep.buildOrders();
         //4. 创建消息对象,指定主题Topic,tag和消息体
         for (int i = 0; i < orderStepList.size(); i++) {
-            log.info("OrderStep[{}]",orderStepList.get(i));
+            log.info("OrderStep[{}]", orderStepList.get(i));
             String body = orderStepList.get(i) + "";
             Message msg = new Message("OrderTopic", "Order", "i" + i, body.getBytes());
             /**
@@ -40,23 +42,24 @@ public class Producer {
              * args2: 消息队列的选择器
              * args3: 选择队列的业务标识(订单Id)
              */
-            SendResult sendResult =producer.send(msg, new MessageQueueSelector() {
-                /**
-                 *
-                 * @param list      队列集合
-                 * @param message   消息对象
-                 * @param o         参业务标识的数
-                 * @return
-                 */
-                @Override
-                public MessageQueue select(List<MessageQueue> list, Message message, Object o) {
-                    Long orderId = (Long) o;
-                    Long index = orderId % list.size();
-                    MessageQueue messageQueue = list.get(Integer.valueOf(String.valueOf(index)));
-                    log.info("队列大小[{}]该订单[{}],将被发送到队列[{}]",list.size(),o,messageQueue.getQueueId());
-                    return messageQueue;
-                }
-            }, orderStepList.get(i).getOrderId());
+            SendResult sendResult = producer.send(msg, new MessageQueueSelector() {
+                        /**
+                         *
+                         * @param list      队列集合
+                         * @param message   消息对象
+                         * @param o         参业务标识的数
+                         * @return
+                         */
+                        @Override
+                        public MessageQueue select(List<MessageQueue> list, Message message, Object o) {
+                            Long orderId = (Long) o;
+                            Long index = orderId % list.size();
+                            MessageQueue messageQueue = list.get(Integer.valueOf(index+""));
+                            log.info("队列大小[{}]该订单[{}],将被发送到队列[{}]", list.size(), o, messageQueue.getQueueId());
+                            return messageQueue;
+                        }
+                    }, orderStepList.get(i).getOrderId()
+            );
             //System.out.println("发送结果: "+sendResult);
         }
 

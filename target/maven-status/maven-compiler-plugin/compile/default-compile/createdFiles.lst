@@ -1,7 +1,9 @@
 rocketmq\order\Producer.class
 rocketmq\order\Producer$1.class
+rocketmq\boot\Consumer.class
 rocketmq\transaction\Consumer$1.class
 rocketmq\filter\tag\Producer.class
+rocketmq\boot\Producer.class
 rocketmq\delay\Consumer$1.class
 rocketmq\base\producer\SyncProducer.class
 rocketmq\RocketmqApplicaiton.class

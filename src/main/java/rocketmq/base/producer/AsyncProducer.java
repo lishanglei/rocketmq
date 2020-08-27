@@ -44,7 +44,7 @@ public class AsyncProducer {
                 //发送成功的回调函数
                 @Override
                 public void onSuccess(SendResult sendResult) {
-                    log.info("发送成功的结果[{}]",sendResult);
+                    System.out.println("发送成功的结果[{}]"+sendResult);
                 }
                 //发送失败的回调函数
                 @Override

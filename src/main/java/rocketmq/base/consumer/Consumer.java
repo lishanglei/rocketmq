@@ -34,7 +34,7 @@ public class Consumer {
         //2. 指定NameServer地址
         consumer.setNamesrvAddr("192.168.5.62:9876;192.168.5.63:9876");
         //3. 订阅主题Topic和Tag
-        consumer.subscribe("base", "Tag-1 || Tag-2");
+        consumer.subscribe("base", "Tag-1 || Tag-2 || Tag-3");
         //4.设置消费消息模式,默认 负载均衡
 
         //广播模式
@@ -46,11 +46,9 @@ public class Consumer {
                 new MessageListenerConcurrently() {
                     //接收消息内容
                     @Override
-                    public ConsumeConcurrentlyStatus consumeMessage(
-                            List<MessageExt> list,
-                            ConsumeConcurrentlyContext consumeConcurrentlyContext) {
+                    public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> list, ConsumeConcurrentlyContext consumeConcurrentlyContext) {
                         if (list != null && list.size() > 0) {
-                            for(MessageExt messageExt :list){
+                            for (MessageExt messageExt : list) {
                                 System.out.println(new String(messageExt.getBody()));
                             }
                         }
